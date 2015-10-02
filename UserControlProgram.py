@@ -2,7 +2,7 @@ import numpy as np
 
 class CarControl:
     def __init__(self):
-        self.P = 0.03
+        self.P = 0.005
     def mainloop(self,lineposition):
         #TODO : Fix it
         if lineposition == np.NaN:
