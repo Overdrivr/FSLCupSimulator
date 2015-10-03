@@ -11,7 +11,7 @@ class Car:
         self.y = []
         self.x.append(startx)
         self.y.append(starty)
-        self.camerawidth = 10
+        self.camerawidth = 30
         self.sqrdcamwidth = self.camerawidth * self.camerawidth
         self.camleftx = []
         self.camlefty = []
@@ -20,10 +20,10 @@ class Car:
         self._compute_camera_limits()
         self.speed = 0
         self.delta = 0
-        self.direction_max_rotation_speed = 200 # 200 degrees per second
+        self.direction_max_rotation_speed = 10000 # 200 degrees per second
         self.direction_target = 0
-        self.direction_min = -20
-        self.direction_max = 20
+        self.direction_min = -45
+        self.direction_max = 45
         self._compute_applied_direction(0.01)
 
     # Move the car forward
@@ -127,6 +127,8 @@ class Car:
         else:
             result = self.direction_target
         self.orientation += result
+
+        #print(self.orientation)
 
         # Calculate orthogonal vector
         self.orientationvector[0] = math.cos(math.radians(self.orientation))
