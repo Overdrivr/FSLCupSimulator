@@ -16,8 +16,8 @@ class Simulation:
 
         self.car.setspeed(10)
 
-        self.steps = 10000
-        self.step = 5.0/1000
+        self.steps = 30000
+        self.step = 1.0/1000
 
         self.elapsed = 0
 
@@ -46,6 +46,10 @@ class Simulation:
             if self.elapsed - self.last_camera_refresh > self.camera_refresh_rate:
                 self.last_camera_refresh = self.elapsed
                 linepos = self.car.lineposition(self.x,self.y)
+
+                if linepos is np.NaN:
+                    print("Line lost.")
+                    self.early_stop = True
 
                 # Ask user program new values for direction and speed
                 direction,speed = self.pilot.mainloop(linepos)
