@@ -126,6 +126,8 @@ class Car:
             self.direction_target += result
         else:
             result = self.direction_target
+            self.direction_target = 0
+            
         self.orientation += result
 
         #print(self.orientation)
