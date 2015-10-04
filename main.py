@@ -5,8 +5,10 @@ matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import Simulation
+import threading
 
-simu = Simulation.Simulation()
+lock = threading.Lock()
+simu = Simulation.Simulation(lock)
 
 #Plot des donnes
 textsize = 18
@@ -46,17 +48,24 @@ dataPlot = FigureCanvasTkAgg(figure1,master=root)
 dataPlot.show()
 dataPlot.get_tk_widget().grid(column=0,row=0,sticky='WENS',columnspan=5)
 
-refreshrate = 200
+refreshrate = 100
 def refresh():
-    # TODO : Acquire lock on the data !
+
+    lock.acquire()
     line_car_position.set_data(simu.car.x,simu.car.y)
     line_cam_right_position.set_data(simu.car.camrightx,simu.car.camrighty)
     line_cam_left_position.set_data(simu.car.camleftx,simu.car.camlefty)
+    lock.release()
 
     #line_direction.set_data
     #ax1.relim()
     #ax1.autoscale_view(False,False,True)
-    dataPlot.draw()
+    try:
+        dataPlot.draw()
+    except:
+        print("X : ",len(simu.car.x))
+        print("Y : ",len(simu.car.y))
+
     root.after(refreshrate,refresh)
 
 def onExit():

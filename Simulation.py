@@ -5,7 +5,7 @@ from UserControlProgram import CarControl
 import threading
 
 class Simulation:
-    def __init__(self):
+    def __init__(self,threadlock):
         self.x,self.y = load_circuit('circuit1.png')
 
         self.car = Car(128,400)
@@ -26,6 +26,8 @@ class Simulation:
 
         self.early_stop = False
 
+        self.threadlock = threadlock
+
         self.t = threading.Thread(target=self.simulate)
         self.t.start()
 
@@ -39,13 +41,18 @@ class Simulation:
             if percent > 0:
                 if percent % 10 == 0:
                     print("Simulated "+str(percent)+" %")
+
+            self.threadlock.acquire()
             # Move simulator in time
             self.car.step(self.step)
+            self.threadlock.release()
 
             # Camera reading
             if self.elapsed - self.last_camera_refresh > self.camera_refresh_rate:
                 self.last_camera_refresh = self.elapsed
+                self.threadlock.acquire()
                 linepos = self.car.lineposition(self.x,self.y)
+                self.threadlock.release()
 
                 if linepos is np.NaN:
                     print("Line lost.")
