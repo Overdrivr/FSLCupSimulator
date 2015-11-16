@@ -1,14 +1,19 @@
 import numpy as np
 from CircuitLoader import load_circuit
 from CarModel import Car
+from CameraModel import Camera
 from UserControlProgram import CarControl
 import threading
 
 class Simulation:
     def __init__(self,threadlock):
-        self.x,self.y = load_circuit('circuit1.png')
+        self.x,self.y,self.img = load_circuit('circuit1.png')
 
         self.car = Car(128,400)
+
+        self.camera = Camera()
+        self.line = []
+
         self.distance = []
         self.distance.append(self.car.lineposition(self.x,self.y))
 
@@ -49,6 +54,7 @@ class Simulation:
 
             # Camera reading
             if self.elapsed - self.last_camera_refresh > self.camera_refresh_rate:
+                self.line = self.camera.get_line((self.car.camleftx[-1],self.car.camlefty[-1]),(self.car.camrightx[-1],self.car.camrighty[-1]),self.img)
                 self.last_camera_refresh = self.elapsed
                 self.threadlock.acquire()
                 linepos = self.car.lineposition(self.x,self.y)

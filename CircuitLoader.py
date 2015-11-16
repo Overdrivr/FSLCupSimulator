@@ -16,4 +16,4 @@ def load_circuit(filename):
     x = np.array(xt)
     y = np.array(yt)
 
-    return x,y
+    return x,y,im
